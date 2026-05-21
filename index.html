@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepwithme | Modern Learning Platform</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN for bar chart visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="login-view" class="login-screen">
+    <div class="login-card">
+        <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+            <span class="logo-text">Prep<span class="logo-accent">WithMe</span></span>
+        </div>
+        <h2 id="auth-title" style="margin-bottom: 0.5rem; color: var(--text-dark);">Welcome Back</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">Please sign in to continue your preparation.</p>
+        
+        <button class="btn btn-primary btn-lg" onclick="loginWithGoogle()" style="width: 100%; display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem;">
+            <svg style="width:18px" viewBox="0 0 24 24"><path fill="currentColor" d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C9.03,19.27 6.59,17.38 6.59,13.33C6.59,9.28 9.03,7.39 12.19,7.39C13.96,7.39 15.31,7.97 16.25,8.84L18.22,6.91C16.66,5.45 14.5,4.65 12.19,4.65C7.3,4.65 3.86,8.11 3.86,13.33C3.86,18.55 7.3,22.01 12.19,22.01C17.18,22.01 21.5,18.42 21.5,13.33C21.5,12.56 21.43,11.83 21.35,11.1V11.1Z" /></svg>
+            Sign in with Google
+        </button>
+        
+        <div style="display: flex; align-items: center; margin: 1rem 0; color: #cbd5e1;">
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid #e2e8f0;">
+            <span style="padding: 0 10px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600;">or</span>
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid #e2e8f0;">
+        </div>
+
+        <div style="text-align: left;">
+            <div id="name-group" style="display: none; margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Full Name</label>
+                <input type="text" id="auth-name" placeholder="John Doe" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Email Address</label>
+            <input type="email" id="auth-email" placeholder="student@example.com" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Password</label>
+            <input type="password" id="auth-pass" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1.5rem;">
+        </div>
+
+        <button id="auth-submit-btn" class="btn btn-primary" style="width: 100%;" onclick="handleEmailAuth()">
+            Sign In
+        </button>
+
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+            <span id="auth-toggle-text">Don't have an account?</span> 
+            <a href="#" onclick="toggleAuthMode()" id="auth-toggle-link" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign Up</a>
+        </p>
+        <button id="dev-bypass-btn" class="btn" style="display: none; width: 100%; margin-top: 1rem; border-color: #fbbf24; color: #b45309; background: #fffbeb;" onclick="enableDevMode()">Dev: Bypass Login</button>
+    </div>
+</div>
+
+<div id="app-view" style="display: none;">
+    <header>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <a href="#" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+            <span class="logo-text">Prep<span class="logo-accent">WithMe</span></span>
+        </a>
+        <div id="auth-area" class="auth-container">
+            <div class="profile-dropdown">
+                <button class="profile-trigger" onclick="toggleProfileDropdown()">
+                    <span id="user-name"></span>
+                    <div id="user-pic" class="avatar"></div>
+                </button>
+                <div id="dropdown-menu" class="dropdown-menu">
+                    <div class="dropdown-user-info">
+                        <p id="full-name" class="user-info-name"></p>
+                    </div>
+                    <hr class="dropdown-divider">
+                    <div class="dropdown-items">
+                        <div class="dropdown-item" onclick="showProfileDetails(); toggleProfileDropdown()">
+                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <span>Profile Details</span>
+                        </div>
+                        <div class="dropdown-item" onclick="showStatistics(); toggleProfileDropdown()">
+                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            <span>Statistics</span>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div class="dropdown-item logout-item" onclick="logout()">
+                            <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            <span>Sign Out</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="nav-card">
+                <div class="nav-group-title">General</div>
+                <div id="nav-home" class="nav-item active" onclick="renderHome()">
+                    Dashboard Home
+                </div>
+                <div class="nav-group-title">Categories</div>
+                <nav class="nav-list" id="category-nav">
+                    <!-- Dynamically populated -->
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content" id="main-content">
+            <div class="header-meta">
+                <div class="breadcrumb">Dashboard / <span id="bread-cat">Arithmetic</span></div>
+                <h1 class="page-title" id="display-title">Arithmetic Aptitude</h1>
+            </div>
+
+            <div id="questions-list">
+                <!-- Dynamic Content -->
+            </div>
+            <div id="mock-result"></div>
+        </main>
+    </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBaMQgO6HLcySG2iKKR2r8EECDAkAPjOS0",
+    authDomain: "prepwithme-d4e0b.firebaseapp.com",
+    projectId: "prepwithme-d4e0b",
+    storageBucket: "prepwithme-d4e0b.firebasestorage.app",
+    messagingSenderId: "174360014749",
+    appId: "1:174360014749:web:e895f92e48857d481f4974",
+    measurementId: "G-BM63J10HM6"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Global helper to save performance results to Firestore
+  window.savePerformanceResult = async (resultData) => {
+      const user = auth.currentUser;
+      if (!user) {
+          console.warn("Save skipped: No authenticated user. (Bypass mode active)");
+          return; 
+      }
+      try {
+          await addDoc(collection(db, "users", user.uid, "results"), {
+              ...resultData,
+              timestamp: serverTimestamp(),
+              userEmail: user.email
+          });
+          console.log("Performance data synced to cloud.");
+      } catch (e) { console.error("Performance tracking failed:", e); }
+  };
+
+  // NEW: Global helper to fetch results
+  window.getUserResults = async () => {
+      const user = auth.currentUser;
+      if (!user) return [];
+      
+      try {
+          const q = query(collection(db, "users", user.uid, "results"), orderBy("timestamp", "desc"));
+          const querySnapshot = await getDocs(q);
+          console.log(`Fetched ${querySnapshot.size} results for UID: ${user.uid}`);
+          return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } catch (e) {
+          console.error("Error fetching results:", e);
+          return [];
+      }
+  };
+
+  // NEW: Global helper to update user profile name
+  window.updateUserProfileName = async (newName) => {
+      const user = auth.currentUser;
+      const isBypass = localStorage.getItem('admin_bypass') === 'true';
+
+      if (user || isBypass) {
+          try {
+              if (user) await updateProfile(user, { displayName: newName });
+              
+              // Force local UI update for immediate feedback
+              const userNameDisplay = document.getElementById('user-name');
+              const fullNameDisplay = document.getElementById('full-name');
+              const userPicDisplay = document.getElementById('user-pic');
+              
+              if (userNameDisplay) userNameDisplay.innerText = newName.split(' ')[0] || "Student";
+              if (fullNameDisplay) fullNameDisplay.innerText = newName;
+              if (userPicDisplay && (!user || !user.photoURL)) userPicDisplay.innerText = newName.charAt(0).toUpperCase();
+              
+              return true;
+          } catch (e) { throw e; }
+      }
+  };
+
+  // NEW: Function to record individual topic practice scores
+  window.recordScore = async (topic, score, total) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const docRef = await addDoc(collection(db, "user_scores"), {
+          uid: user.uid,
+          email: user.email,
+          topic: topic,
+          score: score,
+          total: total,
+          timestamp: serverTimestamp()
+        });
+        console.log("Score saved with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    } else {
+      alert("Please login to save your progress!");
+    }
+  };
+
+  let isSignUpMode = false;
+
+  window.toggleAuthMode = () => {
+      isSignUpMode = !isSignUpMode;
+      const title = document.getElementById('auth-title');
+      const nameGroup = document.getElementById('name-group');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const toggleText = document.getElementById('auth-toggle-text');
+      const toggleLink = document.getElementById('auth-toggle-link');
+
+      if (isSignUpMode) {
+          title.innerText = "Create Account";
+          nameGroup.style.display = "block";
+          submitBtn.innerText = "Sign Up";
+          toggleText.innerText = "Already have an account?";
+          toggleLink.innerText = "Login";
+      } else {
+          title.innerText = "Welcome Back";
+          nameGroup.style.display = "none";
+          submitBtn.innerText = "Sign In";
+          toggleText.innerText = "Don't have an account?";
+          toggleLink.innerText = "Sign Up";
+      }
+  };
+
+  window.handleEmailAuth = async () => {
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-pass').value;
+      const name = document.getElementById('auth-name').value;
+
+      if (!email || !pass) return alert("Please fill all fields");
+
+      try {
+          if (isSignUpMode) {
+              if (!name) return alert("Please enter your name");
+              const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+              await updateProfile(userCredential.user, { displayName: name });
+          } else {
+              await signInWithEmailAndPassword(auth, email, pass);
+          }
+      } catch (error) {
+          alert("Authentication error: " + error.message);
+      }
+  };
+
+  // 1. Function to trigger Google Login
+  window.loginWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        console.log("Logged in:", result.user.displayName);
+      }).catch((error) => alert("Login failed: " + error.message));
+  };
+
+  // 2. Function to Logout
+  window.logout = () => {
+    localStorage.removeItem('admin_bypass');
+    signOut(auth).then(() => location.reload());
+  };
+
+  window.toggleProfileDropdown = () => {
+      const menu = document.getElementById('dropdown-menu');
+      if (menu) menu.classList.toggle('show');
+  };
+
+  // Dev Bypass Helper
+  window.enableDevMode = () => {
+      localStorage.setItem('admin_bypass', 'true');
+      location.reload();
+  };
+
+  // Show dev button only if on localhost
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      document.getElementById('dev-bypass-btn').style.display = 'block';
+  }
+
+  // Close dropdown when clicking outside
+  window.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('dropdown-menu');
+    if (dropdown && !e.target.closest('.profile-dropdown')) {
+        dropdown.classList.remove('show');
+    }
+  });
+
+  // 3. UI Observer
+  onAuthStateChanged(auth, (user) => {
+    const loginView = document.getElementById('login-view');
+    const appView = document.getElementById('app-view');
+    const userName = document.getElementById('user-name');
+    const userPic = document.getElementById('user-pic');
+    const fullName = document.getElementById('full-name');
+
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const hasBypass = localStorage.getItem('admin_bypass') === 'true' && isDev;
+
+    if (user || hasBypass) {
+      const activeUser = user || { displayName: "Admin Developer", email: "dev@prepwithme.local", photoURL: null };
+      loginView.style.display = 'none';
+      appView.style.display = 'block';
+      userName.innerText = (activeUser.displayName || "Student").split(' ')[0];
+      
+      if(fullName) fullName.innerText = activeUser.displayName || "Student";
+      // Store email globally for the Profile Details view
+      window.currentUserEmail = activeUser.email;
+      
+      if (activeUser.photoURL) {
+          userPic.innerHTML = `<img src="${activeUser.photoURL}" style="width:100%; height:100%; object-fit:cover; border-radius:50%">`;
+      } else {
+          userPic.innerText = (activeUser.displayName || "S").charAt(0);
+      }
+    } else {
+      loginView.style.display = 'flex';
+      appView.style.display = 'none';
+    }
+  });
+</script>
+<script src="script.js"></script>
+</body>
+</html>
+ 
